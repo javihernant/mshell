@@ -1,0 +1,6 @@
+*.o
+.vscode/
+.cache/
+Makefile_old
+minishell
+compile_commands.json
