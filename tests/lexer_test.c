@@ -1,3 +1,4 @@
+#include "lists_fts.h"
 #include "tests.h"
 #include <stdio.h>
 
@@ -42,8 +43,35 @@ void	test_parse_arg()
 	test_parse_arg_aux("arg1||");
 }
 
+void	print_lst(t_list *lst)
+{
+	printf("[ ");
+	while (lst != 0)
+	{
+		printf("\"%s\",\n", (char *)lst->content);
+		lst = lst->next;
+	}
+	printf(" ]\n");
+}
+
+void	test_parse_args_aux(char *line)
+{
+	t_list	*lst;
+	int i = 0;
+	lst = parse_args(line, &i);
+	printf("IN:%s\n", line);
+	printf("OUT:");
+	print_lst(lst);
+}
+
+void	test_parse_args()
+{
+	test_parse_args_aux("cmd1 \"hello\\\"'dear how are you?\"    	\"snd arg\" && cm2 ");
+}
+
 int main(void)
 {
 	// test_skip_char();
-	test_parse_arg();
+	// test_parse_arg();
+	test_parse_args();
 }

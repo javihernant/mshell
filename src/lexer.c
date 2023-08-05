@@ -42,6 +42,18 @@ int	is_concat_op(char *line, int idx)
 	return (0);
 }
 
+int	is_end_of_arg(char first_c, char *line, int i, int j)
+{
+	if (first_c != 0 && line[j] == first_c)
+	{
+		if (!skip_char(line, i, j))
+			return (1);
+	}
+	else if (first_c == 0 && (is_space(line[j]) || is_concat_op(line, j)))
+		return (1);
+	return (0);
+}
+
 char	*parse_arg(char *line, int *idx)
 {
 	int		i;
@@ -59,16 +71,38 @@ char	*parse_arg(char *line, int *idx)
 	}
 	while (line[j] != '\0')
 	{
-		if (first_c != 0 && line[j] == first_c) {
-			if (!skip_char(line, i, j))
-				break ;
-		}
-		else if (first_c == 0 && (is_space(line[j]) || is_concat_op(line, j)))
+		if (is_end_of_arg(first_c, line, i, j))
 			break ;
 		j++ ;
 	}
-	*idx = j;
+	if (first_c == 0)
+		*idx = j;
+	else
+		*idx = j + 1;
 	return (str_slice(line, i, j));
+}
+
+int is_par(char c)
+{
+	return (c == '(' || c == ')');
+}
+
+t_list	*parse_args(char *line, int *idx)
+{
+	int		i;
+	t_list	*lst;
+
+	i = *idx;
+	while (1)
+	{
+		while (is_space(line[i]))
+			i++;
+		if (line[i] == '\0' || is_concat_op(line, i) || is_par(line[i]))
+			break ;
+		lstadd_back(&lst, parse_arg(line, &i));
+	}
+	*idx = i;
+	return lst;
 }
 
 // t_list	*get_tokens(char *line, int *idx)
