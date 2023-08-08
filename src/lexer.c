@@ -1,16 +1,7 @@
-//TODO: char** lexer()
-//TODO: char* parse_lexeme()
-//TODO: skip_single_quote
-//TODO: skip_double_quote
 #include "strings_fts.h"
 #include "lists_fts.h"
-
-/*
-cmd arg1 "skip && || & ' \"" arg3
-*/
-// t_list	*parse_lexemes() {
-// 	//TODO
-// }
+#include "exprs.h"
+#include <stdlib.h>
 
 int	skip_char(char *line, int i, int j)
 {
@@ -92,6 +83,7 @@ t_list	*parse_args(char *line, int *idx)
 	int		i;
 	t_list	*lst;
 
+	lst = 0;
 	i = *idx;
 	while (1)
 	{
@@ -105,25 +97,79 @@ t_list	*parse_args(char *line, int *idx)
 	return lst;
 }
 
-// t_list	*get_tokens(char *line, int *idx)
-// {
-// 	int		i;
-// 	t_list	*lexeme;
-// 	char	*arg;
+t_token *mk_tkn(int type, t_list *lst)
+{
+	t_token	*token;
 
-// 	i = *idx;
-// 	while (line[i] != '\0')
-// 	{
-// 		if (is_end_lexeme(line[i]))
-// 			break ;
-// 		else if (!is_space(line[i]))
-// 		{
-// 			arg = parse_arg(line, &i);
-// 			lstadd_back(&lexeme, (void *)arg);
-// 		}
-// 		else 
-// 			i++;
-// 	}
-// 	*idx = i;
-// 	return (lexeme);
-// }
+	token = malloc(sizeof(t_token));
+	token->type = type;
+	token->args = 0;
+	if (type == TKN_ARGS)
+		token->args = lst;
+	return (token);
+}
+
+t_token *gen_par_tkn(char *line, int *idx)
+{
+	t_token	*token;
+
+	if (line[*idx] == '(')
+	{
+		token = mk_tkn(TKN_LPAR, 0);
+		(*idx)++;
+	}
+	else
+	{
+		token = mk_tkn(TKN_RPAR, 0);
+		(*idx)++;
+	}
+	return (token);
+}
+
+t_token *gen_op_tkn(char *line, int *idx)
+{
+	t_token	*token;
+
+	if (line[*idx] == '|')
+	{
+		token = mk_tkn(TKN_OR, 0);
+		*idx += 2;
+	}
+	else
+	{
+		token = mk_tkn(TKN_AND, 0);
+		*idx += 2;
+	}
+	return (token);
+}
+
+t_token	*produce_token(char *line, int *idx)
+{
+	t_token	*token;
+
+	if (line[*idx] == '(' || line[*idx] == ')')
+		token = gen_par_tkn(line, idx);
+	else if (is_concat_op(line, *idx))
+		token = gen_op_tkn(line, idx);
+	else
+		token = mk_tkn(TKN_ARGS, parse_args(line, idx));
+	return (token);
+}
+
+t_list	*get_tokens(char *line)
+{
+	int		i;
+	t_list	*tokens;
+
+	tokens = 0;
+	i = 0;
+	while (1)
+	{
+		while (is_space(line[i]))
+			i++;
+		if (line[i] == '\0')
+			break ;
+		lstadd_back(&tokens, produce_token(line, &i));
+	}
+	return (tokens);
+}

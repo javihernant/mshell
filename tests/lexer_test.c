@@ -1,5 +1,6 @@
 #include "lists_fts.h"
 #include "tests.h"
+#include "exprs.h"
 #include <stdio.h>
 
 
@@ -69,9 +70,43 @@ void	test_parse_args()
 	test_parse_args_aux("cmd1 \"hello\\\"'dear how are you?\"    	\"snd arg\" && cm2 ");
 }
 
-int main(void)
+void	print_token(t_token *token)
 {
-	// test_skip_char();
-	// test_parse_arg();
-	test_parse_args();
+	if (token->type == TKN_AND) {
+		printf("&&\n");
+	} else if (token->type == TKN_OR){
+		printf("||\n");
+
+	} else if (token->type == TKN_LPAR){
+		printf("(\n");
+
+	}else if (token->type == TKN_RPAR){
+		printf(")\n");
+	}else if (token->type == TKN_ARGS){
+		print_lst(token->args);
+	} 
+}
+
+void	test_get_tokens_aux(char *line)
+{
+	t_list *tokens;
+	int		i;
+
+	printf("IN:%s\n", line);
+	printf("OUT\n");
+	i = 0;
+	tokens = get_tokens(line);
+	while (tokens != 0)
+	{
+		printf("TOKEN %d:\n",i);
+		print_token(tokens->content);
+		i++;
+		tokens = tokens->next;
+	}
+}
+
+void	test_get_tokens()
+{
+	test_get_tokens_aux("cmd1 \"hello\\\"'dear how are you?\"    	\"snd arg\" && (cm2 || cmd3 arg1 arg2 )");
+
 }

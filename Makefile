@@ -2,8 +2,9 @@ NAME=minishell
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 IFLAGS=-I./include
-SRC=tests/lexer_test.c src/lexer.c src/strings/str1.c src/lists/lists1.c
-OBJ=$(SRC:.c=.o)
+TESTS=tests/lexer_test.c tests/parser_test.c
+SRC=src/lexer.c src/strings/str1.c src/lists/lists1.c src/parser.c src/errors.c
+OBJ=$(SRC:.c=.o) $(TESTS:.c=.o)
 COMPILED_OBJS=$(shell find . -name '*.o')
 DBG=-g
 

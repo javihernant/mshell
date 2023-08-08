@@ -38,4 +38,15 @@ t_list	*lstlast(t_list *lst)
 	return (last);
 }
 
+//frees node and returns next; It does not free its content
+t_list	*next(t_list *curr)
+{
+	t_list	*n;
+
+	if (curr == 0)
+		return 0;
+	n = curr->next;
+	free(curr);
+	return (n);
+}
 
