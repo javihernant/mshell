@@ -7,3 +7,6 @@ This shell accepts command concatenation with operators like || or &&. A simple 
 ## Build
 Build the project with `make`.
 Then execute the executable that it creates (minishell)
+
+## TODO
+- Change args() function from parser to cmds()

@@ -42,13 +42,12 @@ void	test_expr()
 	//test_parse_args();
 	// test_get_tokens();
 	
-	test_expr_aux("cmd1 \"hello\\\"'dear how are you?\"    	\"snd arg\" && (cm2 || cmd3 arg1 arg2 ) || cmd4");
+	test_expr_aux("cmd1 \"hello\\\"'dear how are you?\"    	\"snd arg\" && (cm2 \")\" || cmd3 arg1 arg2 ) || cmd4");
 	// test_expr_aux("cm2 || cmd3 arg1 arg2  || cmd4");
 }
 
-
-int	main()
-{
-	test_expr();
+// int	main()
+// {
+// 	test_expr();
 	
-}
+// }

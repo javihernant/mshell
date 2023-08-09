@@ -28,4 +28,30 @@ typedef struct s_expr
 	t_list			*args;
 }	t_expr;
 
+// # define CMD_DFLT 0
+// # define CMD_PIPE 1
+// typedef struct s_cmd
+// {
+// 	int				type;
+// 	t_list			*args;
+// }	t_cmd;
+
+/*
+	List of commands
+		List of args
+*/
+
+# define ARG_DFLT 0
+# define ARG_IN 1
+# define ARG_HDOC 2
+# define ARG_OUT 3
+# define ARG_OUTAPND 4
+# define ARG_PIPE 5
+
+typedef struct s_arg
+{
+	int				type;
+	char			*arg;
+}	t_arg;
+
 #endif
