@@ -38,6 +38,19 @@ t_list	*lstlast(t_list *lst)
 	return (last);
 }
 
+int	lstlen(t_list *lst)
+{
+	int	i;
+
+	i = 0;
+	while (lst != 0)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
+}
+
 //frees node and returns next; It does not free its content
 t_list	*next(t_list *curr)
 {

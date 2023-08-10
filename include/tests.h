@@ -8,12 +8,14 @@
 int		skip_char(char *line, int i, int j);
 char	*parse_arg(char *line, int *idx);
 t_list	*parse_cmds(char *line, int *idx);
+t_list	*parse_cmd(char *line, int *idx);
 t_list	*get_tokens(char *line);
 t_expr	*gen_expr(char *line);
 void	print_cmds(t_list *cmds);
-
 void	test_parse_args_aux(char *line);
 void	test_get_tokens_aux(char *line);
 void	print_token(t_token *token);
+int		exec_cmd(t_list *args);
+
 
 #endif

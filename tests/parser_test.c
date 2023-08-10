@@ -46,8 +46,8 @@ void	test_expr_aux(char *line)
 // 	// test_expr_aux("cm2 || cmd3 arg1 arg2  || cmd4");
 // }
 
-int	main()
-{
-	test_expr_aux("cmd1 \"ignore | > << >>\" arg2 | cmd2 arg1 > out1 >> out2 < in1 << in2 | cmd3 && cmd4");
+// int	main()
+// {
+// 	test_expr_aux("cmd1 \"ignore | > << >>\" arg2 | cmd2 arg1 > out1 >> out2 < in1 << in2 | cmd3 && cmd4");
 
-}
+// }
