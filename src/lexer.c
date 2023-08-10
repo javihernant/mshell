@@ -211,9 +211,9 @@ t_token *mk_tkn(int type, t_list *lst)
 
 	token = malloc(sizeof(t_token));
 	token->type = type;
-	token->args = 0;
-	if (type == TKN_ARGS)
-		token->args = lst;
+	token->cmds = 0;
+	if (type == TKN_CMDS)
+		token->cmds = lst;
 	return (token);
 }
 
@@ -260,7 +260,7 @@ t_token	*produce_token(char *line, int *idx)
 	else if (is_concat_op(line, *idx))
 		token = gen_op_tkn(line, idx);
 	else
-		token = mk_tkn(TKN_ARGS, parse_cmds(line, idx)); //TODO: TKN_CMDS
+		token = mk_tkn(TKN_CMDS, parse_cmds(line, idx));
 	return (token);
 }
 

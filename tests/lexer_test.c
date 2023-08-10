@@ -44,16 +44,16 @@ void	test_skip_char(void)
 // 	test_parse_arg_aux("arg1||");
 // }
 
-void	print_lst(t_list *lst)
-{
-	printf("[ ");
-	while (lst != 0)
-	{
-		printf("\"%s\",\n", (char *)lst->content);
-		lst = lst->next;
-	}
-	printf(" ]\n");
-}
+// void	print_lst(t_list *lst)
+// {
+// 	printf("[ ");
+// 	while (lst != 0)
+// 	{
+// 		printf("\"%s\",\n", (char *)lst->content);
+// 		lst = lst->next;
+// 	}
+// 	printf(" ]\n");
+// }
 
 // void	test_parse_args_aux(char *line)
 // {
@@ -80,10 +80,10 @@ void	print_token(t_token *token)
 	} else if (token->type == TKN_LPAR){
 		printf("(\n");
 
-	}else if (token->type == TKN_RPAR){
+	} else if (token->type == TKN_RPAR){
 		printf(")\n");
-	}else if (token->type == TKN_ARGS){
-		print_lst(token->args);
+	} else if (token->type == TKN_CMDS){
+		print_cmds(token->cmds);
 	} 
 }
 
@@ -152,7 +152,7 @@ void test_parse_cmds(char *line)
 	print_cmds(cmds);
 }
 
-int	main()
-{
-	test_parse_cmds("cmd1 \"ignore | > << >>\" arg2 | cmd2 arg1 > out1 >> out2 < in1 << in2 | cmd3 && cmd4");
-}
+// int	main()
+// {
+// 	test_parse_cmds("cmd1 \"ignore | > << >>\" arg2 | cmd2 arg1 > out1 >> out2 < in1 << in2 | cmd3 && cmd4");
+// }

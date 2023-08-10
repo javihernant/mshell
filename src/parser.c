@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "tests.h"
 
-t_expr	*mk_expr(int type, t_expr *expra, t_expr *exprb, t_list *args)
+t_expr	*mk_expr(int type, t_expr *expra, t_expr *exprb, t_list *cmds)
 {
 	t_expr	*new_expr;
 
@@ -13,9 +13,9 @@ t_expr	*mk_expr(int type, t_expr *expra, t_expr *exprb, t_list *args)
 	new_expr->type = type;
 	new_expr->expr_a = expra;
 	new_expr->expr_b = exprb;
-	new_expr->args = 0;
-	if (type == EXPR_ARGS)
-		new_expr->args = args;
+	new_expr->cmds = 0;
+	if (type == EXPR_CMDS)
+		new_expr->cmds = cmds;
 	return (new_expr);
 }
 
@@ -37,7 +37,7 @@ void	advance_tkn_ls(t_list **tokens, t_token **tkn)
 	*tkn = peek_tkn(*tokens);
 }
 
-t_expr	*args(t_list **tokens)
+t_expr	*cmds(t_list **tokens)
 {
 	t_token	*tkn;
 	t_expr	*expr;
@@ -46,7 +46,7 @@ t_expr	*args(t_list **tokens)
 	tkn = peek_tkn(*tokens);
 	if (tkn != 0)
 	{
-		expr = mk_expr(EXPR_ARGS, 0, 0, tkn->args);
+		expr = mk_expr(EXPR_CMDS, 0, 0, tkn->cmds);
 		advance_tkn_ls(tokens, &tkn);
 	}
 	return (expr);
@@ -77,7 +77,7 @@ t_expr	*pars(t_list **tokens)
 				ft_error("Expected ')'");
 		}
 		else
-			return (args(tokens));
+			return (cmds(tokens));
 	}
 	return (expr);
 }
