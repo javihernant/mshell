@@ -62,10 +62,27 @@ void	set_out_redir(t_arg *arg)
 	dup2(fd,1);
 }
 
+//LAST THING DONE.
+//TODO: set_hdoc
+void	set_in_redir(char *filename)
+{
+	int	fd;
+
+	fd = open(filename, O_CREAT | O_RDONLY);
+	dup2(fd,0);
+}
+
+
 void	set_redir(t_arg *arg)
 {
 	if (arg->type == ARG_OUT || arg->type == ARG_OUTAPND)
 		set_out_redir(arg);
+	else if (arg->type == ARG_HDOC)
+	{
+		//set_hdoc_redir(arg->arg);
+	}
+	else if (arg->type == ARG_IN)
+		set_in_redir(arg->arg);
 	printf("REDIR (%d): %s\n", arg->type, arg->arg);
 }
 

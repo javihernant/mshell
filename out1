@@ -6,4 +6,10 @@ RC:0REDIR (4): out1
 REDIR (1): in1
 REDIR (2): hello my baby
 cmd1 arg1 arg2 
+RC:0REDIR (4): out1
+hola
+hello
+reading from fileÿREDIR (1): in1
+REDIR (2): hello my baby
+cmd1 arg1 arg2 
 RC:0
