@@ -24,3 +24,27 @@ int	is_space(char c)
 	b = (c == ' ' || c == '\t' || c == '\n');
 	return (b);
 }
+
+int	ft_strlen(char *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
+}
+
+int		ft_strsequal(char *sa, char *sb)
+{
+	while (*sa != '\0' && *sb != '\0')
+	{
+		if (*sa != *sb)
+			return (0);
+		sa++;
+		sb++;
+	}
+	if (*sa != 0 || *sb != '\0')
+		return (0);
+	return (1);
+}

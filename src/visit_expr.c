@@ -1,9 +1,12 @@
 #include "exprs.h"
 #include "lists_fts.h"
+#include "strings_fts.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <readline/readline.h>
+
 
 int	exec_cmds(t_list *cmds);
 int	exec_cmd(t_list *args);
@@ -62,8 +65,6 @@ void	set_out_redir(t_arg *arg)
 	dup2(fd,1);
 }
 
-//LAST THING DONE.
-//TODO: set_hdoc
 void	set_in_redir(char *filename)
 {
 	int	fd;
@@ -72,15 +73,40 @@ void	set_in_redir(char *filename)
 	dup2(fd,0);
 }
 
+void	set_hdoc_redir(char	*delim)
+{
+	char	*line;
+	int		tmp_fd;
+	int		end;
+
+	tmp_fd = open("/tmp/hdoc_tmp", O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
+
+	while (1)
+	{
+		line = readline("> ");
+		if (line == 0)
+			break ;
+		end = ft_strsequal(line, delim);
+		if (!end)
+		{
+			write(tmp_fd, line, ft_strlen(line));
+			write(tmp_fd, "\n", 1);
+		}
+		free(line);
+		if (end)
+			break ;
+	}
+	close(tmp_fd);
+	tmp_fd = open("/tmp/hdoc_tmp", O_CREAT | O_RDONLY);
+	dup2(tmp_fd,0);
+}
 
 void	set_redir(t_arg *arg)
 {
 	if (arg->type == ARG_OUT || arg->type == ARG_OUTAPND)
 		set_out_redir(arg);
 	else if (arg->type == ARG_HDOC)
-	{
-		//set_hdoc_redir(arg->arg);
-	}
+		set_hdoc_redir(arg->arg);
 	else if (arg->type == ARG_IN)
 		set_in_redir(arg->arg);
 	printf("REDIR (%d): %s\n", arg->type, arg->arg);

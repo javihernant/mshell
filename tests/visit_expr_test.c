@@ -15,6 +15,6 @@ void	test_exec_cmd(char *str)
 
 int main()
 {
-	test_exec_cmd("cmd1 arg1 < in1 arg2 << \"hello my baby\"");
+	test_exec_cmd("cmd1 arg1 << END arg2");
 
 }
