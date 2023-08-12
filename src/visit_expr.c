@@ -48,7 +48,7 @@ int	exec_cmds(t_list *cmds)
 		//TODO: pipes
 		rc = exec_cmd(cmds->content);
 		cmds = next(cmds);
-		//TEST: pipes
+
 	}
 	return (rc);
 }
@@ -112,13 +112,11 @@ void	set_redir(t_arg *arg)
 	printf("REDIR (%d): %s\n", arg->type, arg->arg);
 }
 
-//TODO: * and $VARS
-char	*extend_arg(char *str)
+char	*expand_globs(char *arg)
 {
 	// char	*new_str;
-
-	// free(str);
-	return (str);
+	//free(arg)
+	return (arg);
 }
 
 //Converts t_list of args into an array (format required by execve). Sets redirections.
@@ -135,9 +133,13 @@ char	**process_argsls(t_list *args)
 	while (args != 0)
 	{
 		arg = args->content;
-		if (arg->type == ARG_DFLT)
+		if (arg->type == ARG_DFLT || arg->type == ARG_DFLT_SGL
+			|| arg->type == ARG_DFLT_DBL)
 		{
-			argv[i] = extend_arg(arg->arg);
+			if (arg->type == ARG_DFLT)
+				argv[i] = expand_globs(arg->arg);
+			else
+				argv[i] = arg->arg;
 			i++;
 		}
 		else
@@ -163,8 +165,8 @@ int	exec_cmd(t_list *args)
 	}
 	printf("\n");
 	//Test: View content of argv OK
-	//Test: indirection OUT and OUTAPND
-	//Test: indirection IN and HDOC
+	//Test: indirection OUT and OUTAPND OK
+	//Test: indirection IN and HDOC OK
 	//Test: see that $VARS work
 	//Test: see that *works
 	return (0);

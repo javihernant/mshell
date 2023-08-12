@@ -6,7 +6,7 @@
 #include "exprs.h"
 
 int		skip_char(char *line, int i, int j);
-char	*parse_arg(char *line, int *idx);
+t_arg	*parse_arg(char *line, int *idx);
 t_list	*parse_cmds(char *line, int *idx);
 t_list	*parse_cmd(char *line, int *idx);
 t_list	*get_tokens(char *line);

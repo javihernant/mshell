@@ -42,11 +42,13 @@ typedef struct s_expr
 */
 
 # define ARG_DFLT 0
-# define ARG_IN 1
-# define ARG_HDOC 2
-# define ARG_OUT 3
-# define ARG_OUTAPND 4
-# define ARG_PIPE 5
+# define ARG_DFLT_SGL 1
+# define ARG_DFLT_DBL 2
+# define ARG_IN 3
+# define ARG_HDOC 4
+# define ARG_OUT 5
+# define ARG_OUTAPND 6
+# define ARG_PIPE 7
 
 typedef struct s_arg
 {

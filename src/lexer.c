@@ -2,8 +2,10 @@
 #include "strings_fts.h"
 #include "lists_fts.h"
 #include "exprs.h"
+#include "tests.h"
 #include <stdlib.h>
 
+t_arg	*mk_arg(int type, char *str);
 int	arg_type(char *line, int idx);
 
 int	skip_char(char *line, int i, int j)
@@ -78,6 +80,25 @@ char	*parse_str_arg(char *line, int *idx)
 	return (str_slice(line, i, j));
 }
 
+t_arg *parse_arg(char *line, int *idx)
+{
+	char	first_c;
+	char	*str_arg;
+	int		arg_type;
+
+	first_c = 0;
+	if (line[*idx] == '\'' || line[*idx] == '"')
+		first_c = line[*idx];
+	if (first_c == '"')
+		arg_type = ARG_DFLT_DBL;
+	else if (first_c == '\'')
+		arg_type = ARG_DFLT_SGL;
+	else
+		arg_type = ARG_DFLT;
+	str_arg = parse_str_arg(line, idx);
+	return (mk_arg(arg_type, str_arg));
+}
+
 int is_par(char c)
 {
 	return (c == '(' || c == ')');
@@ -149,7 +170,8 @@ t_list	*parse_cmd(char *line, int *idx)
 			|| is_par(line[i]) || arg_type(line, i) == ARG_PIPE)
 			break ;
 		if (arg_type(line, i) == ARG_DFLT)
-			lstadd_back(&args, mk_arg(ARG_DFLT, parse_str_arg(line, &i)));
+			// lstadd_back(&args, mk_arg(ARG_DFLT, parse_str_arg(line, &i)));
+			lstadd_back(&args, parse_arg(line, &i));
 		else
 			lstadd_back(&args, parse_other_arg(line, &i));
 	}

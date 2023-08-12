@@ -1,3 +1,4 @@
+#include "lists_fts.h"
 #include <stdlib.h>
 
 //Create string from i to j exclusive
@@ -47,4 +48,58 @@ int		ft_strsequal(char *sa, char *sb)
 	if (*sa != 0 || *sb != '\0')
 		return (0);
 	return (1);
+}
+
+//TODO: TEST
+int	count_chars(t_list	*strs)
+{
+	int	i;
+
+	i = 0;
+	while (strs != 0)
+	{
+		if (strs->content != 0)
+			i += ft_strlen(strs->content);
+		strs = strs->next;
+	}
+	return (i);
+}
+
+//TODO:TEST
+int	ft_strcpy(char *dst, char *src)
+{
+	int	i;
+
+	i = 0;
+	while (src[i] != '\0')
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (i);
+}
+
+//TODO: TEST
+char	*joinstrs(t_list *strs)
+{
+	int		len;
+	char	*joined;
+	t_list	*tmp;
+	int		i;
+
+	i = 0;
+	len = count_chars(strs);
+	joined = malloc(len + 1);
+	while (strs != 0)
+	{
+		if (strs->content != 0)
+			i += ft_strcpy(&joined[i], strs->content);
+		tmp = strs->next;
+		free(strs->content);
+		free(strs);
+		strs = tmp;
+	}
+	joined[i] = '\0';
+	return (joined);
 }
