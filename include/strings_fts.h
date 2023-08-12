@@ -8,5 +8,6 @@ int		is_space(char c);
 int		ft_strlen(char *s);
 int		ft_strsequal(char *sa, char *sb);
 char	*joinstrs(t_list *strs);
+char	*ft_strdup(char *str);
 
 #endif

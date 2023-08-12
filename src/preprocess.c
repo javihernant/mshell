@@ -32,6 +32,8 @@ char *get_env_var(char *line, int *idx)
 	if (var != 0)
 	{
 		val = getenv(var);
+		if (val != 0)
+			val = ft_strdup(val);
 		free(var);
 	}
 	return (val);

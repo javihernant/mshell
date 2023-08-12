@@ -103,3 +103,14 @@ char	*joinstrs(t_list *strs)
 	joined[i] = '\0';
 	return (joined);
 }
+
+char	*ft_strdup(char *str)
+{
+	int		len;
+	char	*dup;
+
+	len = ft_strlen(str);
+	dup = malloc(len + 1);
+	ft_strcpy(dup, str);
+	return (dup);
+}
