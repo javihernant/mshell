@@ -44,16 +44,16 @@ void	test_skip_char(void)
 // 	test_parse_arg_aux("arg1||");
 // }
 
-// void	print_lst(t_list *lst)
-// {
-// 	printf("[ ");
-// 	while (lst != 0)
-// 	{
-// 		printf("\"%s\",\n", (char *)lst->content);
-// 		lst = lst->next;
-// 	}
-// 	printf(" ]\n");
-// }
+void	print_lst(t_list *lst)
+{
+	printf("[ ");
+	while (lst != 0)
+	{
+		printf("\"%s\",\n", (char *)lst->content);
+		lst = lst->next;
+	}
+	printf(" ]\n");
+}
 
 // void	test_parse_args_aux(char *line)
 // {

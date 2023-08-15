@@ -9,5 +9,6 @@ int		ft_strlen(char *s);
 int		ft_strsequal(char *sa, char *sb);
 char	*joinstrs(t_list *strs);
 char	*ft_strdup(char *str);
+int		ends_with(char *end, char *str);
 
 #endif

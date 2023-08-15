@@ -63,3 +63,16 @@ t_list	*next(t_list *curr)
 	return (n);
 }
 
+void	clean_str_ls(t_list *ls)
+{
+	t_list	*tmp;
+
+	while (ls != 0)
+	{
+		tmp = ls->next;
+		free(ls->content);
+		free(ls);
+		ls = tmp;
+	}
+}
+

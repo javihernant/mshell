@@ -87,10 +87,10 @@ char *expand_envs(char *line)
 	return (joinstrs(strs));
 }
 
-int main()
-{
-	char *line;
+// int main()
+// {
+// 	char *line;
 
-	line = expand_envs("cmd1 \"$HELO hello\" '$HELO' $HELO another arg");
-	printf("%s\n", line);
-}
+// 	line = expand_envs("cmd1 \"$HELO hello\" '$HELO' $HELO another arg");
+// 	printf("%s\n", line);
+// }

@@ -1,4 +1,5 @@
 #include "lists_fts.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 //Create string from i to j exclusive
@@ -114,3 +115,32 @@ char	*ft_strdup(char *str)
 	ft_strcpy(dup, str);
 	return (dup);
 }
+
+int	ends_with(char *end, char *str)
+{
+	int	i;
+	int	j;
+
+	i = ft_strlen(str);
+	j = ft_strlen(end);
+
+	if (j > i)
+		return (0);
+	while (end[j - 1] != '\0' && i > 0)
+	{
+		if (str[i - 1] != end[j - 1])
+		{
+			return (0);
+		}
+		j--;
+		i--;
+	}
+	return (1);
+}
+
+// int main()
+// {
+// 	int rc = ends_with("", "hola");
+
+// 	printf("%d", rc);
+// }
