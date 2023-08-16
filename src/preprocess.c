@@ -84,7 +84,7 @@ char *expand_envs(char *line)
 	}
 	if (j > i)
 		lstadd_back(&strs, str_slice(line, i, j));
-	return (joinstrs(strs));
+	return (joinstrs(strs, 0));
 }
 
 // int main()

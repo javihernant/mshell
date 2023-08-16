@@ -81,21 +81,37 @@ int	ft_strcpy(char *dst, char *src)
 	return (i);
 }
 
-//TODO: TEST
-char	*joinstrs(t_list *strs)
+int	bytes_join(t_list *strs, char *sep)
 {
-	int		len;
+	int	chars_cnt;
+	int	words_cnt;
+	int	sep_len;
+
+	chars_cnt = count_chars(strs);
+	words_cnt = lstlen(strs);
+	if (words_cnt == 0)
+		return (1);
+	sep_len = 0;
+	if (sep != 0)
+		sep_len = ft_strlen(sep);
+	return (chars_cnt + (words_cnt - 1) * sep_len + 1);
+}
+
+char	*joinstrs(t_list *strs, char *sep)
+{
 	char	*joined;
 	t_list	*tmp;
 	int		i;
 
 	i = 0;
-	len = count_chars(strs);
-	joined = malloc(len + 1);
+
+	joined = malloc(bytes_join(strs, sep));
 	while (strs != 0)
 	{
 		if (strs->content != 0)
 			i += ft_strcpy(&joined[i], strs->content);
+		if (sep != 0 && strs->next != 0)
+			i += ft_strcpy(&joined[i], sep);
 		tmp = strs->next;
 		free(strs->content);
 		free(strs);
