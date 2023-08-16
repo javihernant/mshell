@@ -13,8 +13,7 @@ void	test_exec_cmd(char *str)
 	printf("RC:%d", rc);
 }
 
-// int main()
-// {
-// 	test_exec_cmd("cmd1 arg1 << END arg2");
-
-// }
+int main()
+{
+	test_exec_cmd("ls 	*.o 	\'ojfore $?\' \'$?\' \"joifjre$?foijo\" \"$?\" ijforij$? $?jojoi $?");
+}

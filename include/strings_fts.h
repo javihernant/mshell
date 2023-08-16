@@ -10,5 +10,6 @@ int		ft_strsequal(char *sa, char *sb);
 char	*joinstrs(t_list *strs, char *sep);
 char	*ft_strdup(char *str);
 int		ends_with(char *end, char *str);
+char	*ft_itoa(int n);
 
 #endif

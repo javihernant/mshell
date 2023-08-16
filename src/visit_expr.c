@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <readline/readline.h>
+#include "globs.h"
 
 
 int	exec_cmds(t_list *cmds);
@@ -110,13 +111,66 @@ void	set_redir(t_arg *arg)
 	else if (arg->type == ARG_IN)
 		set_in_redir(arg->arg);
 	printf("REDIR (%d): %s\n", arg->type, arg->arg);
+	//TODO: Free arg->arg ???
 }
 
 char	*expand_globs(char *arg)
 {
-	// char	*new_str;
-	//free(arg)
-	return (arg);
+	int	i;
+	int	b;
+
+	i = 0;
+	b = 0;
+	while (arg[i] != '\0')
+	{
+		if (arg[i] == '*')
+		{
+			b = 1;
+			break ;
+		}
+		i++;
+	}
+	if (!b)
+		return (arg);
+	return (replace_glob(arg));
+}
+
+char *expand_qstvar_aux(char *line, char *rc)
+{
+	int		i;
+	int		j;
+	t_list	*strs;
+
+	i = 0;
+	j = 0;
+	strs = 0;
+	while (line[j] != '\0')
+	{
+		if (line[j] == '$' && line[j + 1] == '?')
+		{
+			lstadd_back(&strs, str_slice(line, i, j));
+			lstadd_back(&strs, rc);
+			j += 2;
+			i = j;
+		}
+		else
+			j++;
+	}
+	if (j > i)
+		lstadd_back(&strs, str_slice(line, i, j));
+	return (joinstrs(strs, 0));
+}
+
+
+char	*expand_qstvar(t_arg *arg, int last_rc)
+{
+	char	*tmp;
+	if (arg->type == ARG_DFLT_SGL)
+		return (arg->arg);
+	tmp = expand_qstvar_aux(arg->arg, ft_itoa(last_rc));
+	free(arg->arg);
+	arg->arg = tmp;
+	return (tmp);
 }
 
 //Converts t_list of args into an array (format required by execve). Sets redirections.
@@ -136,6 +190,7 @@ char	**process_argsls(t_list *args)
 		if (arg->type == ARG_DFLT || arg->type == ARG_DFLT_SGL
 			|| arg->type == ARG_DFLT_DBL)
 		{
+			argv[i] = expand_qstvar(arg, 123);
 			if (arg->type == ARG_DFLT)
 				argv[i] = expand_globs(arg->arg);
 			else
@@ -160,14 +215,13 @@ int	exec_cmd(t_list *args)
 	argv = process_argsls(args);
 	while (argv[i] != 0)
 	{
-		printf("%s ", argv[i]);
+		printf("'%s' ", argv[i]);
 		i++;
 	}
 	printf("\n");
 	//Test: View content of argv OK
 	//Test: indirection OUT and OUTAPND OK
 	//Test: indirection IN and HDOC OK
-	//Test: see that $VARS work
 	//Test: see that *works
 	return (0);
 }

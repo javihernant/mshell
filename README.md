@@ -9,4 +9,7 @@ Build the project with `make`.
 Then execute the executable that it creates (minishell)
 
 ## TODO
-- Change args() function from parser to cmds()
+- FIX: tab recognized as an empty arg
+test_exec_cmd("ls 	*.o 	\'ojfore $?\' \'$?\' \"joifjre$?foijo\" \"$?\" ijforij$? $?jojoi $?");
+'ls' '' 'ojfore $?' '$?' 'joifjre$?foijo' '$?' 'ijforij$?' '$?jojoi' '$?'
+
