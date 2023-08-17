@@ -15,5 +15,6 @@ void	test_exec_cmd(char *str)
 
 int main()
 {
-	test_exec_cmd("ls 	*.o 	\'ojfore $?\' \'$?\' \"joifjre$?foijo\" \"$?\" ijforij$? $?jojoi $?");
+	// test_exec_cmd("ls *.o");
+	test_exec_cmd("/usr/bin/ls *.o");
 }

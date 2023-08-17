@@ -11,5 +11,6 @@ char	*joinstrs(t_list *strs, char *sep);
 char	*ft_strdup(char *str);
 int		ends_with(char *end, char *str);
 char	*ft_itoa(int n);
+void	*ft_realloc(void *buff, int old_len, int new_len);
 
 #endif

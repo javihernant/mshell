@@ -7,7 +7,7 @@
 #include "strings_fts.h"
 #include "globs.h"
 
-char	*replace_glob(char *pat)
+t_list	*replace_glob(char *pat)
 {
 	char			*cwd;
 	DIR				*dir;
@@ -32,7 +32,7 @@ char	*replace_glob(char *pat)
 		}
 	}
 	closedir(dir);
-	return (joinstrs(strs, " "));
+	return (strs);
 }
 
 // int main()

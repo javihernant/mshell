@@ -170,7 +170,6 @@ t_list	*parse_cmd(char *line, int *idx)
 			|| is_par(line[i]) || arg_type(line, i) == ARG_PIPE)
 			break ;
 		if (arg_type(line, i) == ARG_DFLT)
-			// lstadd_back(&args, mk_arg(ARG_DFLT, parse_str_arg(line, &i)));
 			lstadd_back(&args, parse_arg(line, &i));
 		else
 			lstadd_back(&args, parse_other_arg(line, &i));

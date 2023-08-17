@@ -1,3 +1,4 @@
+#include "errors.h"
 #include "exprs.h"
 #include "lists_fts.h"
 #include "strings_fts.h"
@@ -7,7 +8,7 @@
 #include <unistd.h>
 #include <readline/readline.h>
 #include "globs.h"
-
+#include <sys/wait.h>
 
 int	exec_cmds(t_list *cmds);
 int	exec_cmd(t_list *args);
@@ -114,25 +115,79 @@ void	set_redir(t_arg *arg)
 	//TODO: Free arg->arg ???
 }
 
-char	*expand_globs(char *arg)
+int	contains_glob(char *arg)
 {
 	int	i;
-	int	b;
 
 	i = 0;
-	b = 0;
 	while (arg[i] != '\0')
 	{
 		if (arg[i] == '*')
 		{
-			b = 1;
-			break ;
+			return (1);
 		}
 		i++;
 	}
-	if (!b)
-		return (arg);
-	return (replace_glob(arg));
+	return (0);
+}
+
+int	count_nonempty_strs(t_list	*strs)
+{
+	int	i;
+
+	i = 0;
+	while (strs != 0)
+	{
+		if (((char *)(strs->content))[0] != '\0')
+		{
+			i++;
+		}
+		strs = strs->next;
+	}
+	return (i);
+}
+//TODO: modify argv array. Skip '' from non-matching patterns.<
+void	expand_globs_aux(t_list *new_args, int *argv_idx, char **argv)
+{
+	t_list	*tmp;
+
+	while (new_args != 0)
+	{
+		if (((char *)(new_args->content))[0] != '\0')
+		{
+			argv[*argv_idx] = ft_strdup(new_args->content);
+			*argv_idx += 1;
+		}
+		tmp = new_args->next;
+		free(new_args->content);
+		free(new_args);
+		new_args = tmp;
+	}
+}
+
+void	expand_globs(char *arg, int *argv_idx, char ***ptr_argv, int prev_argv_len)
+{
+	t_list	*new_args;
+	int		new_len;
+
+	if (!contains_glob(arg))
+	{
+		(*ptr_argv)[*argv_idx] = arg;
+		*argv_idx += 1;
+		return ;
+	}
+	new_args = replace_glob(arg);
+	new_len = prev_argv_len + (count_nonempty_strs(new_args) * sizeof(char *));
+	if (new_len != prev_argv_len)
+	{
+		free(arg);
+		*ptr_argv = ft_realloc(*ptr_argv, prev_argv_len, new_len);
+		expand_globs_aux(new_args, argv_idx, *ptr_argv);
+	}
+	else
+	{
+		clean_str_ls(new_args);
+	}
 }
 
 char *expand_qstvar_aux(char *line, char *rc)
@@ -192,10 +247,12 @@ char	**process_argsls(t_list *args)
 		{
 			argv[i] = expand_qstvar(arg, 123);
 			if (arg->type == ARG_DFLT)
-				argv[i] = expand_globs(arg->arg);
+				expand_globs(arg->arg, &i, &argv, sizeof(char *) * (cnt + 1));
 			else
+			{
 				argv[i] = arg->arg;
-			i++;
+				i++;
+			}
 		}
 		else
 			set_redir(arg);
@@ -205,23 +262,66 @@ char	**process_argsls(t_list *args)
 	return (argv);
 }
 
-//This must be executed by child process
+int	is_builtin(char *program)
+{
+	(void) program;
+	return (0);
+}
+
+int	exec_builtin(char **argv)
+{
+	(void) argv;
+	return (0);
+}
+
+int	exec_dflt_cmd(char **argv)
+{
+	int	pid;
+	int	rc;
+	char	**envp;
+
+	envp = 0;
+	pid = fork();
+	if (pid == 0)
+	{
+		execve(argv[0], argv, envp);
+		ft_error("Failure at executing program");
+	}
+	else
+	{
+		wait(&rc);
+		rc = WEXITSTATUS(rc);
+		return (rc);
+	}
+	return (1);
+}
+
 int	exec_cmd(t_list *args)
 {
 	char	**argv;
 	int		i;
+	int		rc;
 
 	i = 0;
+	rc = 0;
 	argv = process_argsls(args);
+	if (argv != 0 && argv[0] != 0)
+	{
+		if (is_builtin(argv[0]))
+		{
+			rc = exec_builtin(argv);
+		}
+		else
+		{
+			rc = exec_dflt_cmd(argv);
+		}
+	}
+	//TODO:Clean argv
 	while (argv[i] != 0)
 	{
 		printf("'%s' ", argv[i]);
 		i++;
 	}
 	printf("\n");
-	//Test: View content of argv OK
-	//Test: indirection OUT and OUTAPND OK
-	//Test: indirection IN and HDOC OK
-	//Test: see that *works
-	return (0);
+	return (rc);
 }

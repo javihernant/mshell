@@ -203,7 +203,23 @@ char	*ft_itoa(int n)
 	return (str);
 }
 
+void	*ft_realloc(void *buff, int old_len, int new_len)
+{
+	char	*new_buff;
+	int		i;
 
+	if (new_len < old_len)
+		return (buff);
+	i = 0;
+	new_buff = malloc(new_len);
+	while (i < old_len)
+	{
+		new_buff[i] = ((char *)(buff))[i];
+		i++;
+	}
+	free(buff);
+	return (new_buff);
+}
 // int main()
 // {
 // 	int rc = ends_with("", "hola");
