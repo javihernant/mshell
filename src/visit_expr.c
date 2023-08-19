@@ -131,22 +131,6 @@ int	contains_glob(char *arg)
 	return (0);
 }
 
-int	count_nonempty_strs(t_list	*strs)
-{
-	int	i;
-
-	i = 0;
-	while (strs != 0)
-	{
-		if (((char *)(strs->content))[0] != '\0')
-		{
-			i++;
-		}
-		strs = strs->next;
-	}
-	return (i);
-}
-//TODO: modify argv array. Skip '' from non-matching patterns.<
 void	expand_globs_aux(t_list **new_args, int *argv_idx, char **argv)
 {
 	t_list	*tmp;
@@ -157,10 +141,6 @@ void	expand_globs_aux(t_list **new_args, int *argv_idx, char **argv)
 	{
 		argv[*argv_idx] = ft_strdup(args->content);
 		*argv_idx += 1;
-		if (((char *)(args->content))[0] != '\0')
-		{
-			
-		}
 		tmp = args->next;
 		free(args->content);
 		free(args);
@@ -181,7 +161,7 @@ void	expand_globs(char *arg, int *argv_idx, char ***ptr_argv, int prev_argv_len)
 		return ;
 	}
 	new_args = replace_glob(arg);
-	new_len = prev_argv_len + (count_nonempty_strs(new_args) * sizeof(char *));
+	new_len = prev_argv_len + (lstlen(new_args) * sizeof(char *));
 	if (new_len != prev_argv_len)
 		*ptr_argv = ft_realloc(*ptr_argv, prev_argv_len, new_len);
 	expand_globs_aux(&new_args, argv_idx, *ptr_argv);
@@ -397,12 +377,6 @@ int	exec_cmd(t_list *args)
 			rc = exec_dflt_cmd(argv);
 		}
 	}
-	//TODO:Clean argv
-	// while (argv[i] != 0)
-	// {
-	// 	printf("'%s' ", argv[i]);
-	// 	i++;
-	// }
 	printf("\n");
 	return (rc);
 }
