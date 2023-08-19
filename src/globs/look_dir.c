@@ -1,6 +1,7 @@
 #include <dirent.h>
 #include "errors.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "lists_fts.h"
@@ -31,6 +32,9 @@ t_list	*replace_glob(char *pat)
 				lstadd_back(&strs, ft_strdup(file->d_name));
 		}
 	}
+	if (strs == 0)
+		lstadd_back(&strs, ft_strdup(pat));
+	free(pat);
 	closedir(dir);
 	return (strs);
 }

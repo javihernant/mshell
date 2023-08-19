@@ -16,5 +16,5 @@ void	test_exec_cmd(char *str)
 int main()
 {
 	// test_exec_cmd("ls *.o");
-	test_exec_cmd("oijfireofije *.o");
+	test_exec_cmd("ls *.o");
 }

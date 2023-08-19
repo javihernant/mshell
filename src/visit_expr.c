@@ -147,22 +147,26 @@ int	count_nonempty_strs(t_list	*strs)
 	return (i);
 }
 //TODO: modify argv array. Skip '' from non-matching patterns.<
-void	expand_globs_aux(t_list *new_args, int *argv_idx, char **argv)
+void	expand_globs_aux(t_list **new_args, int *argv_idx, char **argv)
 {
 	t_list	*tmp;
+	t_list	*args;
 
-	while (new_args != 0)
+	args = *new_args;
+	while (args != 0)
 	{
-		if (((char *)(new_args->content))[0] != '\0')
+		argv[*argv_idx] = ft_strdup(args->content);
+		*argv_idx += 1;
+		if (((char *)(args->content))[0] != '\0')
 		{
-			argv[*argv_idx] = ft_strdup(new_args->content);
-			*argv_idx += 1;
+			
 		}
-		tmp = new_args->next;
-		free(new_args->content);
-		free(new_args);
-		new_args = tmp;
+		tmp = args->next;
+		free(args->content);
+		free(args);
+		args = tmp;
 	}
+	*new_args = args;
 }
 
 void	expand_globs(char *arg, int *argv_idx, char ***ptr_argv, int prev_argv_len)
@@ -179,15 +183,8 @@ void	expand_globs(char *arg, int *argv_idx, char ***ptr_argv, int prev_argv_len)
 	new_args = replace_glob(arg);
 	new_len = prev_argv_len + (count_nonempty_strs(new_args) * sizeof(char *));
 	if (new_len != prev_argv_len)
-	{
-		free(arg);
 		*ptr_argv = ft_realloc(*ptr_argv, prev_argv_len, new_len);
-		expand_globs_aux(new_args, argv_idx, *ptr_argv);
-	}
-	else
-	{
-		clean_str_ls(new_args);
-	}
+	expand_globs_aux(&new_args, argv_idx, *ptr_argv);
 }
 
 char *expand_qstvar_aux(char *line, char *rc)
