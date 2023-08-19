@@ -112,7 +112,8 @@ void	set_redir(t_arg *arg)
 	else if (arg->type == ARG_IN)
 		set_in_redir(arg->arg);
 	printf("REDIR (%d): %s\n", arg->type, arg->arg);
-	//TODO: Free arg->arg ???
+	free(arg->arg);
+	free(arg);
 }
 
 int	contains_glob(char *arg)
@@ -234,6 +235,7 @@ char	**process_argsls(t_list *args)
 		}
 		else
 			set_redir(arg);
+		free(arg);
 		args = next(args);
 	}
 	argv[i] = 0;
