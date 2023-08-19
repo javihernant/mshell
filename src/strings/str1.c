@@ -220,6 +220,24 @@ void	*ft_realloc(void *buff, int old_len, int new_len)
 	free(buff);
 	return (new_buff);
 }
+
+char	*str_merge(char *stra, char *strb)
+{
+	int		len;
+	char	*merged;
+	int		i;
+
+	if (stra == 0 || strb == 0)
+		return (0);
+	len = ft_strlen(stra) + ft_strlen(strb) + 1;
+	merged = malloc(len + 1);
+	i = 0;
+	i += ft_strcpy(merged, stra);
+	ft_strcpy(&merged[i], strb);
+	free(stra);
+	free(strb);
+	return (merged);
+}
 // int main()
 // {
 // 	int rc = ends_with("", "hola");
