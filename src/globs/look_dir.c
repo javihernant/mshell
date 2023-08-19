@@ -35,6 +35,7 @@ t_list	*replace_glob(char *pat)
 	if (strs == 0)
 		lstadd_back(&strs, ft_strdup(pat));
 	free(pat);
+	free(cwd);
 	closedir(dir);
 	return (strs);
 }

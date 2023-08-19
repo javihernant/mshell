@@ -13,5 +13,6 @@ t_list	*lstlast(t_list *lst);
 t_list	*next(t_list *curr);
 int		lstlen(t_list *lst);
 void	clean_str_ls(t_list *ls);
+void	free_strarr(char **arr);
 
 #endif

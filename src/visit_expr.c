@@ -201,7 +201,7 @@ char *expand_qstvar_aux(char *line, char *rc)
 		if (line[j] == '$' && line[j + 1] == '?')
 		{
 			lstadd_back(&strs, str_slice(line, i, j));
-			lstadd_back(&strs, rc);
+			lstadd_back(&strs, ft_strdup(rc));
 			j += 2;
 			i = j;
 		}
@@ -210,6 +210,7 @@ char *expand_qstvar_aux(char *line, char *rc)
 	}
 	if (j > i)
 		lstadd_back(&strs, str_slice(line, i, j));
+	free(rc);
 	return (joinstrs(strs, 0));
 }
 
@@ -259,15 +260,18 @@ char	**process_argsls(t_list *args)
 	return (argv);
 }
 
+//TODO
 int	is_builtin(char *program)
 {
 	(void) program;
 	return (0);
 }
 
+//TODO
 int	exec_builtin(char **argv)
 {
 	(void) argv;
+	// free_strarr(argv);
 	return (0);
 }
 
@@ -319,7 +323,6 @@ t_list	*ls_bin_paths(char *arg)
 	while (tmp != 0)
 	{
 		tmp->content = str_merge(tmp->content, ft_strdup(slash_bin));
-		// printf("%s\n", (char *)tmp->content);
 		tmp = tmp->next;
 	}
 	free(slash_bin);
@@ -363,12 +366,6 @@ int	exec_dflt_cmd(char **argv)
 	if (pid == 0)
 	{
 		find_binary(&argv[0]);
-		int i =0;
-		while (argv[i] != 0)
-		{
-			printf("'%s' ", argv[i]);
-			i++;
-		}
 		execve(argv[0], argv, envp);
 		ft_error("Failure at executing program");
 	}
@@ -376,6 +373,7 @@ int	exec_dflt_cmd(char **argv)
 	{
 		wait(&rc);
 		rc = WEXITSTATUS(rc);
+		free_strarr(argv);
 		return (rc);
 	}
 	return (1);

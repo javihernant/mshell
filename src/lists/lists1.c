@@ -76,3 +76,16 @@ void	clean_str_ls(t_list *ls)
 	}
 }
 
+void	free_strarr(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i] != 0)
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+

@@ -8,6 +8,7 @@ void	test_exec_cmd(char *str)
 	t_list	*args;
 	int		i;
 
+	i = 0;
 	args = parse_cmd(str, &i);
 	rc = exec_cmd(args);
 	printf("RC:%d", rc);
