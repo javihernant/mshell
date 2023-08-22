@@ -1,12 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "lists_fts.h"
-#include "strings_fts.h"
-
-int	skip_char(char *line, int i, int j);
+#include "interpret.h"
 
 //TEST
-char *parse_env_var(char *line, int *idx)
+char	*parse_env_var(char *line, int *idx)
 {
 	int	i;
 	int j;
@@ -22,7 +17,7 @@ char *parse_env_var(char *line, int *idx)
 }
 
 //TEST
-char *get_env_var(char *line, int *idx)
+char	*get_env_var(char *line, int *idx)
 {
 	char	*var;
 	char	*val;
@@ -58,7 +53,7 @@ void	skip_single_qt(char *line, int *idx)
 }
 
 //TEST
-char *expand_envs(char *line)
+char	*expand_envs(char *line)
 {
 	int		i;
 	int		j;
