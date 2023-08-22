@@ -1,4 +1,5 @@
 #include "exec.h"
+#include <stdio.h>
 
 void	exec_dflt_cmd_aux(char **argv)
 {
@@ -83,29 +84,55 @@ int	exec_cmds(t_list *cmds, int last_rc)
 	return (rc);
 }
 
+// int	visit_expr(t_expr *expr, int last_rc)
+// {
+// 	int	rc;
+
+// 	if (expr->type == EXPR_PAR)
+// 		return (visit_expr(expr->expr_a, last_rc));
+// 	else if (expr->type == EXPR_AND)
+// 	{
+// 		rc = visit_expr(expr->expr_a, last_rc);
+// 		if (rc == 0)
+// 			return (visit_expr(expr->expr_b, rc));
+// 		return (rc);
+// 	}
+// 	else if (expr->type == EXPR_OR)
+// 	{
+// 		rc = visit_expr(expr->expr_a, last_rc);
+// 		if (rc != 0)
+// 			return (visit_expr(expr->expr_b, rc));
+// 		return (rc);
+// 	}
+// 	else
+// 		return (exec_cmds(expr->cmds, last_rc));
+// 	return (1);
+// }
+
 int	visit_expr(t_expr *expr, int last_rc)
 {
 	int	rc;
 
 	if (expr->type == EXPR_PAR)
-	{
-		return (visit_expr(expr->expr_a, last_rc));
-	}
+		rc = visit_expr(expr->expr_a, last_rc);
 	else if (expr->type == EXPR_AND)
 	{
 		rc = visit_expr(expr->expr_a, last_rc);
 		if (rc == 0)
-			return (visit_expr(expr->expr_b, rc));
-		return (rc);
+			rc = visit_expr(expr->expr_b, rc);
+		else
+			free_expr(expr->expr_b);
 	}
 	else if (expr->type == EXPR_OR)
 	{
 		rc = visit_expr(expr->expr_a, last_rc);
 		if (rc != 0)
-			return (visit_expr(expr->expr_b, rc));
-		return (rc);
+			rc = visit_expr(expr->expr_b, rc);
+		else
+			free_expr(expr->expr_b);
 	}
 	else
-		return (exec_cmds(expr->cmds, last_rc));
-	return (1);
+		rc = exec_cmds(expr->cmds, last_rc);
+	free(expr);
+	return (rc);
 }

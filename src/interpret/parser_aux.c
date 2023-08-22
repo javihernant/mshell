@@ -1,3 +1,4 @@
+#include "exprs.h"
 #include "interpret.h"
 
 t_expr	*mk_expr(int type, t_expr *expra, t_expr *exprb, t_list *cmds)
@@ -28,6 +29,10 @@ t_token	*peek_tkn(t_list *tokens)
 
 void	advance_tkn_ls(t_list **tokens, t_token **tkn)
 {
+	t_token	*tmp;
+
+	tmp = (t_token *)(*tokens)->content;
 	*tokens = next(*tokens);
+	free(tmp);
 	*tkn = peek_tkn(*tokens);
 }

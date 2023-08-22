@@ -56,4 +56,9 @@ typedef struct s_arg
 	char			*arg;
 }	t_arg;
 
+void	free_arg(t_arg *arg);
+void	free_cmd(t_list *args);
+void	free_cmds(t_list *cmds);
+void	free_expr(t_expr *expr);
+
 #endif
