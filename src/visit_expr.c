@@ -48,7 +48,7 @@ int	*init_pipes(t_list *cmds)
 	int	tmp;
 
 	pipes_cnt = lstlen(cmds) - 1;
-	fds = malloc(sizeof(int) * (pipes_cnt * 2) + 2);
+	fds = malloc(sizeof(int) * (pipes_cnt * 2 + 2));
 	fds[0] = 0;
 	fds[(pipes_cnt * 2) + 1] = 1;
 	i = 1;
@@ -389,7 +389,7 @@ void	exec_dflt_cmd_aux(char **argv)
 
 	find_binary(&argv[0]);
 	execve(argv[0], argv, envp);
-	ft_error("Failure at executing program"); //TODO: dont exit, only terminate child process. Also, print to stderr.
+	ft_error("Failure at executing program"); //TODO: dont exit, only terminate child process.
 }
 
 void	exec_dflt_cmd(char **argv, int *fds)

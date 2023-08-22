@@ -3,7 +3,6 @@
 
 void	ft_error(char *msg)
 {
-	printf("ERROR: %s\n", msg);
-	printf("exiting...");
+	perror(msg);
 	exit(1);
 }
