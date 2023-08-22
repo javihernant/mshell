@@ -10,8 +10,8 @@
 #include "globs.h"
 #include <sys/wait.h>
 
-int	exec_cmds(t_list *cmds);
-int	exec_cmd(t_list *args);
+int		exec_cmds(t_list *cmds);
+void	exec_cmd(t_list *args, int *fds);
 
 int	visit_expr(t_expr *expr)
 {
@@ -40,18 +40,53 @@ int	visit_expr(t_expr *expr)
 	return (1);
 }
 
+int	*init_pipes(t_list *cmds)
+{
+	int	pipes_cnt;
+	int	*fds;
+	int	i;
+	int	tmp;
+
+	pipes_cnt = lstlen(cmds) - 1;
+	fds = malloc(sizeof(int) * (pipes_cnt * 2) + 2);
+	fds[0] = 0;
+	fds[(pipes_cnt * 2) + 1] = 1;
+	i = 1;
+	while (i < pipes_cnt + 1)
+	{
+		pipe(&fds[i]);
+		tmp = fds[i];
+		fds[i] = fds[i + 1];
+		fds[i + 1] = tmp;
+		i += 2;
+	}
+	return (fds);
+}
+
 int	exec_cmds(t_list *cmds)
 {
 	int	rc;
+	int	i;
+	int	*fds;
+	int	cmds_cnt;
 
-	rc = 0;
+	cmds_cnt = lstlen(cmds);
+	i = 0;
+	fds = init_pipes(cmds);
 	while (cmds != 0)
 	{
-		//TODO: pipes
-		rc = exec_cmd(cmds->content);
+		exec_cmd(cmds->content, &fds[i * 2]);
 		cmds = next(cmds);
-
+		i++;
 	}
+	i = 0;
+	while (i < cmds_cnt)
+	{
+		wait(&rc);
+		rc = WEXITSTATUS(rc);
+		i++;
+	}
+	free(fds);
 	return (rc);
 }
 
@@ -111,7 +146,6 @@ void	set_redir(t_arg *arg)
 		set_hdoc_redir(arg->arg);
 	else if (arg->type == ARG_IN)
 		set_in_redir(arg->arg);
-	printf("REDIR (%d): %s\n", arg->type, arg->arg);
 	free(arg->arg);
 	free(arg);
 }
@@ -207,6 +241,27 @@ char	*expand_qstvar(t_arg *arg, int last_rc)
 	return (tmp);
 }
 
+void	process_argsls_aux(t_arg *arg, char ***argvp, int *argvidx, int cnt)
+{
+	int	i;
+
+	i = *argvidx;
+	if (arg->type == ARG_DFLT || arg->type == ARG_DFLT_SGL
+		|| arg->type == ARG_DFLT_DBL)
+	{
+		if (arg->type == ARG_DFLT)
+			expand_globs(arg->arg, &i, argvp, sizeof(char *) * (cnt + 1));
+		else
+		{
+			(*argvp)[i] = arg->arg;
+			i++;
+		}
+	}
+	else
+		set_redir(arg);
+	free(arg);
+	*argvidx = i;
+}
 //Converts t_list of args into an array (format required by execve). Sets redirections.
 char	**process_argsls(t_list *args)
 {
@@ -224,18 +279,9 @@ char	**process_argsls(t_list *args)
 		if (arg->type == ARG_DFLT || arg->type == ARG_DFLT_SGL
 			|| arg->type == ARG_DFLT_DBL)
 		{
-			argv[i] = expand_qstvar(arg, 123);
-			if (arg->type == ARG_DFLT)
-				expand_globs(arg->arg, &i, &argv, sizeof(char *) * (cnt + 1));
-			else
-			{
-				argv[i] = arg->arg;
-				i++;
-			}
+			argv[i] = expand_qstvar(arg, 123); //TODO: RC
 		}
-		else
-			set_redir(arg);
-		free(arg);
+		process_argsls_aux(args->content, &argv, &i, cnt);
 		args = next(args);
 	}
 	argv[i] = 0;
@@ -337,50 +383,60 @@ void	find_binary(char **bin_arg)
 	clean_str_ls(bin_paths);
 }
 
-int	exec_dflt_cmd(char **argv)
+void	exec_dflt_cmd_aux(char **argv)
+{
+	char **envp = 0; //TODO: implement global env
+
+	find_binary(&argv[0]);
+	execve(argv[0], argv, envp);
+	ft_error("Failure at executing program"); //TODO: dont exit, only terminate child process. Also, print to stderr.
+}
+
+void	exec_dflt_cmd(char **argv, int *fds)
 {
 	int	pid;
-	int	rc;
-	char	**envp;
 
-	envp = 0;
 	pid = fork();
 	if (pid == 0)
 	{
-		find_binary(&argv[0]);
-		execve(argv[0], argv, envp);
-		ft_error("Failure at executing program");
+		if (fds[0] != 0)
+		{
+			dup2(fds[0], 0);
+			close(fds[0]);
+		}
+		if (fds[1] != 1)
+		{
+			dup2(fds[1], 1);
+			close(fds[1]);
+		}
+		exec_dflt_cmd_aux(argv);
 	}
 	else
 	{
-		wait(&rc);
-		rc = WEXITSTATUS(rc);
+		if (fds[0] != 0)
+			close(fds[0]);
+		if (fds[1] != 1)
+			close(fds[1]);
 		free_strarr(argv);
-		return (rc);
 	}
-	return (1);
 }
 
-int	exec_cmd(t_list *args)
+void	exec_cmd(t_list *args, int *fds)
 {
 	char	**argv;
-	int		rc;
 
-	rc = 0;
 	argv = process_argsls(args);
 	if (argv != 0 && argv[0] != 0)
 	{
 		if (is_builtin(argv[0]))
 		{
-			rc = exec_builtin(argv);
+			exec_builtin(argv);
 		}
 		else
 		{
-			rc = exec_dflt_cmd(argv);
+			exec_dflt_cmd(argv, fds);
 		}
 	}
-	printf("\n");
-	return (rc);
 }
 
 
