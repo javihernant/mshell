@@ -15,9 +15,9 @@ void	print_cmds(t_list *cmds);
 void	test_parse_args_aux(char *line);
 void	test_get_tokens_aux(char *line);
 void	print_token(t_token *token);
-int		exec_cmd(t_list *args);
+int		exec_cmd(t_list *args, int last_rc);
 int		check_pattern(char *pat, char *str);
-int	exec_cmds(t_list *cmds);
+int		exec_cmds(t_list *cmds, int last_rc);
 
 
 #endif

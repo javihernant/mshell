@@ -10,7 +10,7 @@ void	test_exec_cmd(char *str)
 
 	i = 0;
 	args = parse_cmd(str, &i);
-	rc = exec_cmd(args);
+	rc = exec_cmd(args, 0);
 	printf("RC:%d", rc);
 }
 
@@ -22,12 +22,12 @@ void	test_exec_cmds(char *str)
 
 	i = 0;
 	args = parse_cmds(str, &i);
-	rc = exec_cmds(args);
+	rc = exec_cmds(args, 0);
 	printf("RC:%d", rc);
 }
 
 int main()
 {
 	// test_exec_cmd("ls *.o");
-	test_exec_cmds("ls *.o | cat");
+	test_exec_cmds("echo \"hola rc:$?\" | cat");
 }

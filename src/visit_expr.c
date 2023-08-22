@@ -10,33 +10,33 @@
 #include "globs.h"
 #include <sys/wait.h>
 
-int		exec_cmds(t_list *cmds);
-void	exec_cmd(t_list *args, int *fds);
+int		exec_cmds(t_list *cmds, int last_rc);
+void	exec_cmd(t_list *args, int *fds, int last_rc);
 
-int	visit_expr(t_expr *expr)
+int	visit_expr(t_expr *expr, int last_rc)
 {
 	int	rc;
 
 	if (expr->type == EXPR_PAR)
 	{
-		return (visit_expr(expr->expr_a));
+		return (visit_expr(expr->expr_a, last_rc));
 	}
 	else if (expr->type == EXPR_AND)
 	{
-		rc = visit_expr(expr->expr_a);
+		rc = visit_expr(expr->expr_a, last_rc);
 		if (rc == 0)
-			return (visit_expr(expr->expr_b));
+			return (visit_expr(expr->expr_b, rc));
 		return (rc);
 	}
 	else if (expr->type == EXPR_OR)
 	{
-		rc = visit_expr(expr->expr_a);
+		rc = visit_expr(expr->expr_a, last_rc);
 		if (rc != 0)
-			return (visit_expr(expr->expr_b));
+			return (visit_expr(expr->expr_b, rc));
 		return (rc);
 	}
 	else
-		return (exec_cmds(expr->cmds));
+		return (exec_cmds(expr->cmds, last_rc));
 	return (1);
 }
 
@@ -63,7 +63,7 @@ int	*init_pipes(t_list *cmds)
 	return (fds);
 }
 
-int	exec_cmds(t_list *cmds)
+int	exec_cmds(t_list *cmds, int last_rc)
 {
 	int	rc;
 	int	i;
@@ -75,7 +75,7 @@ int	exec_cmds(t_list *cmds)
 	fds = init_pipes(cmds);
 	while (cmds != 0)
 	{
-		exec_cmd(cmds->content, &fds[i * 2]);
+		exec_cmd(cmds->content, &fds[i * 2], last_rc);
 		cmds = next(cmds);
 		i++;
 	}
@@ -263,7 +263,7 @@ void	process_argsls_aux(t_arg *arg, char ***argvp, int *argvidx, int cnt)
 	*argvidx = i;
 }
 //Converts t_list of args into an array (format required by execve). Sets redirections.
-char	**process_argsls(t_list *args)
+char	**process_argsls(t_list *args, int last_rc)
 {
 	int		cnt;
 	char	**argv;
@@ -279,7 +279,7 @@ char	**process_argsls(t_list *args)
 		if (arg->type == ARG_DFLT || arg->type == ARG_DFLT_SGL
 			|| arg->type == ARG_DFLT_DBL)
 		{
-			argv[i] = expand_qstvar(arg, 123); //TODO: RC
+			argv[i] = expand_qstvar(arg, last_rc); //TODO: RC
 		}
 		process_argsls_aux(args->content, &argv, &i, cnt);
 		args = next(args);
@@ -421,11 +421,11 @@ void	exec_dflt_cmd(char **argv, int *fds)
 	}
 }
 
-void	exec_cmd(t_list *args, int *fds)
+void	exec_cmd(t_list *args, int *fds, int last_rc)
 {
 	char	**argv;
 
-	argv = process_argsls(args);
+	argv = process_argsls(args, last_rc);
 	if (argv != 0 && argv[0] != 0)
 	{
 		if (is_builtin(argv[0]))
