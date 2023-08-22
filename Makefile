@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 IFLAGS=-I. -I./include
 TESTS=tests/lexer_test.c tests/parser_test.c tests/visit_expr_test.c tests/test_globs.c munit/munit.c
-SRC=src/lexer.c src/strings/str1.c src/lists/lists1.c src/parser.c src/errors.c src/visit_expr.c src/preprocess.c src/globs/globs.c src/globs/look_dir.c
+SRC=src/lexer.c src/strings/str1.c src/lists/lists1.c src/parser.c src/errors.c src/preprocess.c src/globs/globs.c src/globs/look_dir.c src/exec/args_process.c src/exec/expansion.c src/exec/find_binary.c src/exec/redir.c src/exec/visit_expr.c src/exec/visit_expr2.c
 OBJ=$(SRC:.c=.o) $(TESTS:.c=.o)
 COMPILED_OBJS=$(shell find . -name '*.o')
 DBG=-g
