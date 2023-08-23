@@ -77,5 +77,7 @@ t_expr	*gen_expr(char *line)
 	t_list	*tokens;
 
 	tokens = get_tokens(line);
+	if (tokens == 0)
+		return (0);
 	return (ops(&tokens));
 }

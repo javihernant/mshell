@@ -16,7 +16,8 @@ int	main(void)
 		if (line == 0)
 			return (0);
 		expr = gen_expr(line);
-		rc = visit_expr(expr, rc);
+		if (expr != 0)
+			rc = visit_expr(expr, rc);
 		free(line);
 	}
 	return (0);
